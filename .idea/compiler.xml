@@ -10,6 +10,11 @@
         <module name="exchange_rates.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="17" />
+    <bytecodeTargetLevel target="11" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="exchange_rates.main" options="--add-exports java.net.http/jdk.internal.net.http=ALL-UNNAMED" />
+    </option>
   </component>
 </project>
