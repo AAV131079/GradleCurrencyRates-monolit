@@ -1,27 +1,82 @@
 package com.example.exchange_rates.Service;
 
-import com.example.exchange_rates.Providers.Impl.MonobankProviderImpl;
-import com.example.exchange_rates.Providers.Impl.NBUProviderImpl;
-import com.example.exchange_rates.Providers.Impl.PrivatbankProviderImpl;
+import com.example.exchange_rates.DTO.Response.CurrencyRatesDTO;
+import com.example.exchange_rates.DTO.Response.ResponseExchangeRatesDTO;
+import com.example.exchange_rates.Enum.CurrencyEnum;
 import com.example.exchange_rates.Repository.ExchangeRateRepository;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 public class ExchangeRatesService {
     private ExchangeRateRepository exchangeRateRepository;
 
+    private static int SIZE = 2;
+    private static String CURRENT_DATE = "The average exchange rate for today (Privatbank, Monobank, NBU)";
+    private static String PERIOD_DATE = "The average exchange rate for period (Privatbank, Monobank, NBU)";
+
     public ExchangeRatesService(ExchangeRateRepository exchangeRateRepository) {
         this.exchangeRateRepository = exchangeRateRepository;
     }
 
-    public void getCurrentRates() throws IOException {
+    public ResponseExchangeRatesDTO getCurrentRates() throws ParseException {
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        Date start = format.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00.000");
+        Date finish = format.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59.999");
+
+        return getResponseExchangeRatesDTO(start, finish);
 
     }
 
-    public void getPeriodRates(String url) {
+    public ResponseExchangeRatesDTO getPeriodRates(String startDate, String finishDate) throws ParseException {
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        Date start = format.parse(startDate + " 00:00:00.000");
+        Date finish = format.parse(finishDate + " 23:59:59.999");
+
+        return getResponseExchangeRatesDTO(start, finish);
+
+    }
+
+    private ResponseExchangeRatesDTO getResponseExchangeRatesDTO(Date start, Date finish) {
+
+        ResponseExchangeRatesDTO responseExchangeRates = new ResponseExchangeRatesDTO(start, finish, PERIOD_DATE);
+
+        Float averageBuyByPeriodEUR = exchangeRateRepository.averageBuyByPeriod(CurrencyEnum.EUR, start, finish);
+        Float averageSaleByPeriodEUR = exchangeRateRepository.averageSaleByPeriod(CurrencyEnum.EUR, start, finish);
+        Float averageBuyByPeriodUSD = exchangeRateRepository.averageBuyByPeriod(CurrencyEnum.USD, start, finish);
+        Float averageSaleByPeriodUSD = exchangeRateRepository.averageSaleByPeriod(CurrencyEnum.USD, start, finish);
+
+        CurrencyRatesDTO currencyRatesEUR = getNewCurrencyRatesDTO(CurrencyEnum.EUR.name(), averageBuyByPeriodEUR, averageSaleByPeriodEUR);
+        CurrencyRatesDTO currencyRatesUSD = getNewCurrencyRatesDTO(CurrencyEnum.USD.name(), averageBuyByPeriodUSD, averageSaleByPeriodUSD);
+
+        if (Objects.isNull(currencyRatesEUR) && Objects.isNull(currencyRatesUSD)) {
+            responseExchangeRates.setCurrencyRates(null);
+            responseExchangeRates.setMessage("Nothing was found in the specified period.");
+        } else {
+            CurrencyRatesDTO[] currencyRates = new CurrencyRatesDTO[] {
+                    Objects.nonNull(currencyRatesEUR) ? currencyRatesEUR : null,
+                    Objects.nonNull(currencyRatesUSD) ? currencyRatesUSD : null
+            };
+            responseExchangeRates.setCurrencyRates(currencyRates);
+        }
+
+        return responseExchangeRates;
+
+    }
+
+    private CurrencyRatesDTO getNewCurrencyRatesDTO(String currency, Float buy, Float sale) {
+        if (Objects.nonNull(buy) && buy > 0F || Objects.nonNull(sale) && sale > 0F) {
+            return new CurrencyRatesDTO(currency, buy, sale);
+        } else {
+            return null;
+        }
     }
 
 }
