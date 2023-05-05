@@ -10,7 +10,7 @@ import java.util.Date;
 @Repository
 public interface ExchangeRateRepository extends JpaRepository<ExchangeRateEntity, Long> {
 
-    @Query("select AVG(exchangeRates.sale) from ExchangeRateEntity exchangeRates " +
+    @Query("select AVG(exchangeRates.buy) from ExchangeRateEntity exchangeRates " +
             "where exchangeRates.createTime between :start and :finish and exchangeRates.currencyType = :currencyEnum")
     Float averageBuyByPeriod(CurrencyEnum currencyEnum, Date start, Date finish);
 
