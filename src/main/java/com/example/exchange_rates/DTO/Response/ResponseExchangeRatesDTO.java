@@ -3,8 +3,6 @@ package com.example.exchange_rates.DTO.Response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter

@@ -5,7 +5,6 @@ import com.example.exchange_rates.Providers.Impl.NBUProviderImpl;
 import com.example.exchange_rates.Providers.Impl.PrivatbankProviderImpl;
 import com.example.exchange_rates.Repository.ExchangeRateRepository;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.util.Date;
 
