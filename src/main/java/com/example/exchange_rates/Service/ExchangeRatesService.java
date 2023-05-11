@@ -25,28 +25,21 @@ public class ExchangeRatesService {
     }
 
     public ResponseExchangeRatesDTO getCurrentRates() throws ParseException {
-
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        Date start = format.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 00:00:00.000");
-        Date finish = format.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")) + " 23:59:59.999");
-
-        return getResponseExchangeRatesDTO(start, finish);
-
+        String date = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return getResponseExchangeRatesDTO(date, date);
     }
 
     public ResponseExchangeRatesDTO getPeriodRates(String startDate, String finishDate) throws ParseException {
+        return getResponseExchangeRatesDTO(startDate, finishDate);
+    }
+
+    private ResponseExchangeRatesDTO getResponseExchangeRatesDTO(String startDate, String finishDate) throws ParseException {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         Date start = format.parse(startDate + " 00:00:00.000");
         Date finish = format.parse(finishDate + " 23:59:59.999");
 
-        return getResponseExchangeRatesDTO(start, finish);
-
-    }
-
-    private ResponseExchangeRatesDTO getResponseExchangeRatesDTO(Date start, Date finish) {
-
-        ResponseExchangeRatesDTO responseExchangeRates = new ResponseExchangeRatesDTO(start, finish, PERIOD_DATE);
+        ResponseExchangeRatesDTO responseExchangeRates = new ResponseExchangeRatesDTO(startDate + " 00:00:00.000", finishDate + " 23:59:59.999", PERIOD_DATE);
 
         Float averageBuyByPeriodEUR = exchangeRateRepository.averageBuyByPeriod(CurrencyEnum.EUR, start, finish);
         Float averageSaleByPeriodEUR = exchangeRateRepository.averageSaleByPeriod(CurrencyEnum.EUR, start, finish);

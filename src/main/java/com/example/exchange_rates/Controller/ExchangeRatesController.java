@@ -4,6 +4,8 @@ import com.example.exchange_rates.DTO.Request.RequestDTO;
 import com.example.exchange_rates.DTO.Response.ErrorResponseDTO;
 import com.example.exchange_rates.DTO.Response.ResponseExchangeRatesDTO;
 import com.example.exchange_rates.Service.ExchangeRatesService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -13,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +49,7 @@ public class ExchangeRatesController {
 
     @Operation(summary = "Get average exchange rates for the period.",
                description = "Request for a list of average exchange rates for all sources for the period. The start and end dates are specified in the request body.")
-    @RequestBody(
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Start and end date in the format: YYYY-MM-DD.",
             required    = true,
             content     = @Content(schema = @Schema(implementation = RequestDTO.class))
@@ -62,7 +63,7 @@ public class ExchangeRatesController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class)))
     })
     @GetMapping("/period")
-    private ResponseEntity<ResponseExchangeRatesDTO> getCurrentRates(@RequestBody RequestDTO requestDTO) throws ParseException {
+    private ResponseEntity<ResponseExchangeRatesDTO> getCurrentRates(@org.springframework.web.bind.annotation.RequestBody RequestDTO requestDTO) throws ParseException {
         return new ResponseEntity<>(exchangeRatesService.getPeriodRates(requestDTO.getStartDate(), requestDTO.getFinishDate()), HttpStatus.OK);
     }
 
