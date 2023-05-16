@@ -4,8 +4,6 @@ import com.example.exchange_rates.DTO.Request.RequestDTO;
 import com.example.exchange_rates.DTO.Response.ErrorResponseDTO;
 import com.example.exchange_rates.DTO.Response.ResponseExchangeRatesDTO;
 import com.example.exchange_rates.Service.ExchangeRatesService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

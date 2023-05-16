@@ -17,12 +17,19 @@ public class DefaultControllerAdvice {
     }
 
     @ExceptionHandler(IOException.class)
-    public ResponseEntity<ErrorResponseDTO> handleException(IOException e) {
+    public ResponseEntity<ErrorResponseDTO> handleIOException(IOException e) {
         return new ResponseEntity<>(new ErrorResponseDTO("IOException", e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ParseException.class)
-    public ResponseEntity<ErrorResponseDTO> handleException(ParseException e) {
+    public ResponseEntity<ErrorResponseDTO> handleParseException(ParseException e) {
         return new ResponseEntity<>(new ErrorResponseDTO("ParseException", e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+
+    @ExceptionHandler(InterruptedException.class)
+    public ResponseEntity<ErrorResponseDTO> handleInterruptedException(InterruptedException e) {
+        return new ResponseEntity<>(new ErrorResponseDTO("InterruptedException", e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 }

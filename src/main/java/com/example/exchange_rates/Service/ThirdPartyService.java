@@ -21,27 +21,16 @@ public class ThirdPartyService {
         this.exchangeRateRepository = exchangeRateRepository;
     }
 
-    public void getCurrencyRatesFromThirdPartyProviders() {
-        String dateTime = new Date().toString();
-        System.out.println("getCurrencyRatesFromThirdPartyProviders() worked!!! [" + dateTime +  "]");
-    }
-
     public void getCurrencyRatesFromMonobankProvider() throws IOException {
         monobankProviderImpl.getCurrencyRates(exchangeRateRepository);
-        String dateTime = new Date().toString();
-        System.out.println("getCurrencyRatesFromMonobankProvider() worked!!! [" + dateTime +  "]");
     }
 
     public void getCurrencyRatesFromNBUProvider() throws IOException {
         nbuProviderImpl.getCurrencyRates(exchangeRateRepository);
-        String dateTime = new Date().toString();
-        System.out.println("getCurrencyRatesFromNBUProvider() worked!!! [" + dateTime +  "]");
     }
 
     public void getCurrencyRatesFromPrivatebankProvider() throws IOException {
         privatbankProviderImpl.getCurrencyRates(exchangeRateRepository);
-        String dateTime = new Date().toString();
-        System.out.println("getCurrencyRatesFromPrivatebankProvider() worked!!! [" + dateTime +  "]");
     }
 
 }
