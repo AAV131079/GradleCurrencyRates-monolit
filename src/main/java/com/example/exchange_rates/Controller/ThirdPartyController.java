@@ -2,7 +2,6 @@ package com.example.exchange_rates.Controller;
 
 import com.example.exchange_rates.Service.ThirdPartyService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -21,26 +20,26 @@ public class ThirdPartyController {
         this.thirdPartyService = thirdPartyService;
     }
 
-    @Scheduled(cron = "${interval-in-cron}")
-    @Async
+    @Scheduled(cron = "${scheduler.cron}")
     public void getCurrencyRatesFromMonobankProvider() throws IOException, InterruptedException {
-        log.warn("CurrencyRatesFromMonobankProvider() started!!! [" + new Date().toString() +  "]");
+        log.warn("CurrencyRatesFromMonobankProvider() started!!! [ time: {}], [ thread: {}]", new Date(),
+                Thread.currentThread().getName());
         thirdPartyService.getCurrencyRatesFromMonobankProvider();
         Thread.sleep(2000);
     }
 
-    @Scheduled(cron = "${interval-in-cron}")
-    @Async
+    @Scheduled(cron = "${scheduler.cron}")
     public void getCurrencyRatesFromNBUProvider() throws IOException, InterruptedException {
-        log.warn("CurrencyRatesFromNBUProvider() started!!! [" + new Date().toString() +  "]");
+        log.warn("CurrencyRatesFromMonobankProvider() started!!! [ time: {}], [ thread: {}]", new Date(),
+                Thread.currentThread().getName());
         thirdPartyService.getCurrencyRatesFromNBUProvider();
         Thread.sleep(2000);
     }
 
-    @Scheduled(cron = "${interval-in-cron}")
-    @Async
+    @Scheduled(cron = "${scheduler.cron}")
     public void getCurrencyRatesFromPrivatebankProvider() throws IOException, InterruptedException {
-        log.warn("CurrencyRatesFromPrivatebankProvider() started!!! [" + new Date().toString() +  "]");
+        log.warn("CurrencyRatesFromMonobankProvider() started!!! [ time: {}], [ thread: {}]", new Date(),
+                Thread.currentThread().getName());
         thirdPartyService.getCurrencyRatesFromPrivatebankProvider();
         Thread.sleep(2000);
     }

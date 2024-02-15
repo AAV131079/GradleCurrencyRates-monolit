@@ -11,13 +11,13 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(name = "exchange_rate")
+@Table(name = "currency_rates")
 public class ExchangeRateEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false, unique = true, name = "id")
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true, name = "currency_rates_id")
+    private Long currencyRatesId;
     @Column(nullable = false, name = "provider_type")
     private ProviderEnum providerType;
     @Column(nullable = false, name = "currency_type")

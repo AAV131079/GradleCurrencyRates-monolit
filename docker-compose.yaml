@@ -1,0 +1,96 @@
+version: '3.9'
+
+services:
+
+  # Database postgreSQL
+  currency-rates-postgresql-db:
+    build:
+      context: .
+      dockerfile: DockerFiles/Database/Dockerfile
+    image: "aav13101979/i_currency-rates-postgresql-db:1.0.0"
+    container_name: currency-rates-postgresql-db
+    ports:
+      - '1310:5432'
+    volumes:
+      - currency-rates-postgresql-db:/var/lib/postgresql/data
+    networks:
+      - appnet
+    healthcheck:
+      test: pg_isready -d $$POSTGRES_DB -U $$POSTGRES_USER
+      start_period: 2m
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+
+  # Currency rates monolith app
+  currency-rates-monolith-app:
+    build:
+      context: .
+      dockerfile: DockerFiles/MonolithApp/Dockerfile
+    image: "aav13101979/i_currency-rates-monolith-app:1.0.0"
+    container_name: currency-rates-monolith-app
+    environment:
+      PROFILE: docker
+    ports:
+      - '2504:2504'
+    networks:
+      - appnet
+    links:
+      - currency-rates-postgresql-db
+    depends_on:
+      currency-rates-postgresql-db:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://currency-rates-monolith-app:2504/actuator/health" ]
+      start_period: 2m
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+
+  # PGAdmin
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "13101979@ukr.net"
+      PGADMIN_DEFAULT_PASSWORD: "aav13101979"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    links:
+      - currency-rates-postgresql-db
+      - currency-rates-monolith-app
+    depends_on:
+      currency-rates-postgresql-db:
+        condition: service_healthy
+      currency-rates-monolith-app:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+    networks:
+      - appnet
+
+networks:
+  appnet:
+
+volumes:
+  currency-rates-postgresql-db:
+  pgadmin-data:

@@ -1,0 +1,25 @@
+server:
+  port: 8888
+
+spring:
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+    show-sql: false
+    properties:
+      hibernate.jdbc.lob.non_contextual_creation: true
+  datasource:
+    url: jdbc:postgresql://localhost:1310/currencyratesdb
+    username: aav
+    password: 13101979
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: app
+  flyway:
+    enabled: true
+    schemas: app
+    validate-on-migrate: true
+    locations: classpath:db/migration
