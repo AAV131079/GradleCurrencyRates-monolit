@@ -7,7 +7,7 @@ FROM amazoncorretto:19-alpine AS i_currency-rates-monolith-app
 RUN apk update
 RUN apk add curl
 RUN apk add --no-cache tzdata
-COPY --from=GRADLE_BUILD /app/build/libs/GradleExchangeRates-monolith-1.0.0.jar GradleExchangeRates-monolith.jar
+COPY --from=GRADLE_BUILD /app/build/libs/GradleCurrencyRates-monolith-1.0.0.jar GradleCurrencyRates-monolith.jar
 EXPOSE 2504
 ENV TZ="Europe/Kiev"
 ENV DB_SCHEMAS="app"
@@ -18,4 +18,4 @@ ENV POSTGRES_DB="currencyratesdb"
 ENV POSTGRES_USER="aav"
 ENV POSTGRES_PASSWORD="13101979"
 ENV PATH_DATABASE="jdbc:postgresql://${CONTAINER_NAME}:${DB_PORT}/${POSTGRES_DB}"
-ENTRYPOINT ["java", "-jar", "GradleExchangeRates-monolith.jar"]
+ENTRYPOINT ["java", "-jar", "GradleCurrencyRates-monolith.jar"]
